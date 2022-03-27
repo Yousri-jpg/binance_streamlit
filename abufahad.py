@@ -3,7 +3,6 @@ import streamlit as st
 #import time
 import config
 #from binance.client import Client
-from streamlit_option_menu import option_menu
 import ccxt
 import streamlit as st
 #import pandas as pd
