@@ -36,12 +36,14 @@ option = st.multiselect(
 'Choose Your Coin',
 (config.usdt_coin_list),
 ('ADAUSDT','ETHUSDT'))
+
+
   
 st.text_area('You selected:', option)
 
 
 
-usdt_amount = st.number_input('Amount in USDT to trade for each Pair',min_value=20)
+usdt_amount = st.number_input('Amount in USDT to trade for each Pair')
 
 
 
