@@ -101,7 +101,7 @@ else:
 
         try:
 
-          exchange.create_market_order(symbol=coin, side='BUY', amount=amount,params=params)
+          exchange.create_market_order(symbol=coin, side='BUY', amount=amount)
 
           st.success('Orders are Sucessful')
           time.sleep(0.5)
