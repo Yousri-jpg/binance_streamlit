@@ -71,35 +71,40 @@ for coin in option:
  symbol_ticker = exchange.fetch_ticker(coin)
  symbol_price=float(symbol_ticker['last'])
 
+if len(option)  <= 0 :
 
-if symbol_price == 0 :
+  warning2=st.warning("Please Add coin to buy !")
+
+elif symbol_price == 0 :
 
 
 
-  st.warning (f"Please Remove {coin}")
+   warning= st.warning (f"Please Remove {coin}")
+
 
 else:
  amount = (usdt_amount*1) / (symbol_price*1)
 
 
 
-execute = st.button("Execute all Orders")
+ execute = st.button("Execute all Orders")
 
-if(execute):
 
-  st.write('Please wait , Executing Your orders......',)
+ if(execute):
+
+    st.write('Please wait , Executing Your orders......',)
 
 	
-  for coin in option :
-   opened_orders = exchange.fetch_open_orders(coin)
-   if coin not in opened_orders:
+    for coin in option :
+      opened_orders = exchange.fetch_open_orders(coin)
+      if coin not in opened_orders:
 
-    try:
+        try:
 
-     exchange.create_market_order(symbol=coin, side='BUY', amount=amount)
+          exchange.create_market_order(symbol=coin, side='BUY', amount=amount,params=params)
 
-     st.success('Orders are Sucessful')
-     time.sleep(0.5)
+          st.success('Orders are Sucessful')
+          time.sleep(0.5)
 
-    except Exception as e:
-       st.write("an exception occured - {}".format(e))
+        except Exception as e:
+          st.write("an exception occured - {}".format(e))
