@@ -32,13 +32,14 @@ api_secret = st.text_input('your api_secret')
 ##############
 
 
+
 option = st.multiselect(
 'Choose Your Coin',
 (config.usdt_coin_list),
 ('ADAUSDT','ETHUSDT'))
 
 
-  
+
 st.text_area('You selected:', option)
 
 
@@ -52,46 +53,53 @@ usdt_amount = st.number_input('Amount in USDT to trade for each Pair')
 #api_secret = config.api_secret
 
 exchange=ccxt.binance ({
-    'apiKey': api_key,
-    'secret': api_secret,
-    # 'timeout': 30000,
-    'enableRateLimit': True,
-    'set_sandbox_mode':True
+'apiKey': api_key,
+'secret': api_secret,
+# 'timeout': 30000,
+'enableRateLimit': True,
+'set_sandbox_mode':True
 
 
 })
 params = {
-    'test': True,  # test if it's valid, but don't actually place it
+'test': True,  # test if it's valid, but don't actually place it
 }
 
-print (option)
 #######
 for coin in option:
-        
-    symbol_ticker = exchange.fetch_ticker(coin)
-    symbol_price=float(symbol_ticker['last'])
-    if symbol_price != 0 :
 
-      amount = (usdt_amount*1) / (symbol_price*1)
-    else:
-    
-     st.write("Could not fetch price for this symbol",coin)      
-    
+ symbol_ticker = exchange.fetch_ticker(coin)
+ symbol_price=float(symbol_ticker['last'])
+
+
+if symbol_price == 0 :
+
+
+
+  st.warning (f"Please Remove {coin}")
+
+else:
+ amount = (usdt_amount*1) / (symbol_price*1)
+
+
+
 execute = st.button("Execute all Orders")
+
 if(execute):
-    st.write('Please wait , Executing Your orders......',)
 
-        
-    for coin in option :
-      opened_orders = exchange.fetch_open_orders(coin)
-      if coin not in opened_orders:
-         
-        try:
-            exchange.create_market_order(symbol=coin, side='BUY', amount=amount)
+  st.write('Please wait , Executing Your orders......',)
 
-            st.success('Orders are Sucessful')
-            time.sleep(0.5)
- 
-        except Exception as e:
-            st.write("an exception occured - {}".format(e))
+	
+  for coin in option :
+   opened_orders = exchange.fetch_open_orders(coin)
+   if coin not in opened_orders:
 
+    try:
+
+     exchange.create_market_order(symbol=coin, side='BUY', amount=amount)
+
+     st.success('Orders are Sucessful')
+     time.sleep(0.5)
+
+    except Exception as e:
+       st.write("an exception occured - {}".format(e))
