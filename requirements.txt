@@ -2,3 +2,5 @@
 ccxt
 pandas
 streamlit_option_menu 
+Python 3.9.2
+
