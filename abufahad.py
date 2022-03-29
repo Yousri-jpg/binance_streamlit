@@ -9,9 +9,6 @@ import streamlit as st
 
 
 ##########
-global api_key
-global api_secret
-
 
 #########
 
@@ -36,7 +33,7 @@ api_secret = st.text_input('your api_secret')
 option = st.multiselect(
 'Choose Your Coin',
 (config.usdt_coin_list),
-('ADAUSDT','ETHUSDT'))
+('ADAUSDT', 'ETHUSDT'))
 
 
 
@@ -57,7 +54,6 @@ exchange=ccxt.binance ({
 'secret': api_secret,
 # 'timeout': 30000,
 'enableRateLimit': True,
-'set_sandbox_mode':True
 
 
 })
@@ -66,45 +62,71 @@ params = {
 }
 
 #######
-for coin in option:
-
- symbol_ticker = exchange.fetch_ticker(coin)
- symbol_price=float(symbol_ticker['last'])
-
-if len(option)  <= 0 :
-
-  warning2=st.warning("Please Add coin to buy !")
-
-elif symbol_price == 0 :
+#for coin in option:
 
 
 
-   warning= st.warning (f"Please Remove {coin}")
+#if(execute):
+
+# else:
+#amount = (usdt_amount*1) / (symbol_price*1)
+
+#  st.write(amount)
 
 
-else:
- amount = (usdt_amount*1) / (symbol_price*1)
+execute = st.button("Execute all Orders")
+ccxt_bal= exchange.fetch_balance({'recvWindow': 50000})
+
+usdt_balance=ccxt_bal['USDT']['free']
+
+st.write (f'USDT Balance {usdt_balance} ')
+
+ # No_of_orders = len(option)
+ # order_Cost = No_of_orders * amount
+ # st.write(f"Total cost for this orders is {order_Cost}")
 
 
+    
+#st.write('Please wait , Executing Your orders......',)
 
- execute = st.button("Execute all Orders")
+if(execute):    
+    
+   for coin in option :
+      
+      symbol_ticker = exchange.fetch_ticker(coin)
+    
+      symbol_price=float(symbol_ticker['last'])
+
+      
+      
+
+      if len(option)  <= 0 :
+
+        warning_1=st.warning("Please Add coin to buy !")
+
+      elif symbol_price == 0 :
 
 
- if(execute):
+        warning_2= st.warning (f"Please Remove {coin}")
 
-    st.write('Please wait , Executing Your orders......',)
+      else :
 
-	
-    for coin in option :
-      opened_orders = exchange.fetch_open_orders(coin)
-      if coin not in opened_orders:
+         amount = usdt_amount / symbol_price
 
-        try:
+         st.write(f"We bought {amount} from coin {coin}")
 
-          exchange.create_market_order(symbol=coin, side='BUY', amount=amount)
+  #        if a not in dict_coin:
 
-          st.success('Orders are Sucessful')
-          time.sleep(0.5)
+         try:
 
-        except Exception as e:
-          st.write("an exception occured - {}".format(e))
+            order=exchange.create_market_order(symbol=coin, side='BUY', amount=amount)
+
+            st.success('Orders are Sucessful')
+            
+            #     st.write(order)
+            
+            time.sleep(0.5)
+
+         except Exception as e:
+         
+            st.write("an exception occured - {}".format(e))
